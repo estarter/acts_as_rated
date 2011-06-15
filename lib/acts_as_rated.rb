@@ -274,7 +274,7 @@ module ActiveRecord #:nodoc:
           ratings.count(:conditions => ['rater_id = ?', rater.id]) > 0
         end
 
-        # return item rating for passed rater
+        # return item rating number for passed rater
         def rating_by rater
           rating_class = acts_as_rated_options[:rating_class].constantize
           if !(acts_as_rated_options[:rater_class].constantize === rater)
@@ -282,7 +282,8 @@ module ActiveRecord #:nodoc:
           end
           raise RateError, "Rater must be a valid and existing object" if rater.nil? || rater.id.nil?
           raise RateError, 'Rater must be a valid rater' if !rating_class.column_names.include? "rater_id"
-          return ratings.first(:conditions => ['rater_id = ?', rater.id])
+          rating = ratings.first(:conditions => ['rater_id = ?', rater.id])
+          rating.nil? ? nil : rating.rating
         end
 
         private
